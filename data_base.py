@@ -6,7 +6,7 @@ load_dotenv()
 air_base = os.getenv('air_base')
 air_table = os.getenv('air_table')
 airtable_token = os.getenv('air_table_token')
-notion_api = os.getenv('api')
+notion_api = os.getenv('notion_api')
 notion_base_id = os.getenv('notion_base_id')
 discord_token = os.getenv('discord_token')
 
