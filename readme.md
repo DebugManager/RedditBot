@@ -4,3 +4,4 @@ CREATE .env with rows:
     airtable_token = ''
     notion_api = ''
     notion_base_id = ''
+    discord_token = ''

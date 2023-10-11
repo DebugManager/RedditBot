@@ -2,15 +2,44 @@ from datetime import datetime, timezone
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from data_base import *
+import discord
+from discord import client
 
 info3 = {
     'api': notion_api,
     'version': '2022-06-28',
     'base_id': notion_base_id
 }
+config = {
+    'token': discord_token,
+    'prefix': 'prefix'
+}
+#id person which get spam, get first who write to bot or in const here
+USER_ID = None
+# Create a Discord client
+intents = discord.Intents.default()
+intents.typing = False
+intents.presences = False
+client = discord.Client(intents=intents)
 
 
 URL_BASE = 'https://old.reddit.com/user/'
+@client.event
+async def on_message(ctx):
+    global USER_ID
+    if ctx.author != client.user:
+        if USER_ID is None:
+            USER_ID = ctx.author.id
+        if USER_ID == ctx.author.id:
+            reddit = RedditParse()
+            reddit.start_parse()
+            await send_message_to_user('Parsing is done')
+
+async def send_message_to_user(message):
+    global USER_ID
+    user = await client.fetch_user(USER_ID)
+    if user:
+        await user.send(message)
 
 
 class RedditParse:
@@ -98,7 +127,8 @@ class RedditParse:
             else:
                 write_user_data_airtable(airtable_token, base_id=air_base, table_id=air_table, new_data=users_data[i])
 
+        self.browser.close()
+
 
 if __name__ == '__main__':
-    reddit = RedditParse()
-    reddit.start_parse()
+    client.run(config['token'])
